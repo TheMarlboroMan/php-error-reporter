@@ -3,14 +3,14 @@ namespace tools\error_reporter;
 
 class default_reporter implements error_reporter {
 
-	public function report($_err_severity, $_err_message, $_err_file, $_err_line, array $_backtrace) {
+	public function report(error $_err) {
 
-		$backtrace=nl2br(print_r($_backtrace, true));
+		$backtrace=nl2br(print_r($_err->get_backtrace(), true));
 
 		echo <<<R
 <html>
 <body style="color: red">
-{$_err_severity} => "{$_err_message}" ($_err_file, $_err_line)
+{$_err->get_severity()} => "{$_err->get_message()}" ($_err->get_file(), $_err->get__line())
 <br />
 {$backtrace}
 </body>

@@ -5,7 +5,7 @@ abstract class error_reporter_central {
 
 	private static 				$reporter=null;
 
-	public static function 		init(error_reporter $_er=null) {
+	public static function 		init(error_reporter $_er=null, $_report=-1, $_display=0) {
 
 		if(null===$_er) {
 			self::$reporter=new default_reporter;
@@ -26,8 +26,8 @@ abstract class error_reporter_central {
 			}
 		});
 
-		\ini_set('error_reporting', -1);
-		\ini_set('display_errors', 0);
+		\ini_set('error_reporting', $_report);
+		\ini_set('display_errors', $_display);
 	}
 
 	public static function 		report_error($_s, $_m, $_f, $_l){
@@ -41,6 +41,6 @@ abstract class error_reporter_central {
 			$backtraces[]=backtrace::from_array_and_key($v, $k);
 		}
 
-		self::$reporter->report($_s, $_m, $_f, $_l, $backtraces);
+		self::$reporter->report(new error($_s, $_m, $_f, $_l, $backtraces));
 	}
 };

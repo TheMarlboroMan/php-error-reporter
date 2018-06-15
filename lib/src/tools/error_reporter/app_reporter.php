@@ -3,15 +3,15 @@ namespace tools\error_reporter;
 
 class app_reporter implements error_reporter {
 
-	public function 		report($_err_severity, $_err_message, $_err_file, $_err_line, array $_backtrace) {
+	public function 		report(error $_err) {
 
-		$backtrace=array_reduce($_backtrace, function($_carry, backtrace $_item) {
+		$backtrace=array_reduce($_err->get_backtrace(), function($_carry, backtrace $_item) {
 
 			$_carry.=$this->format_trace($_item);
 			return $_carry;
 		});
 
-		$err_type=tools::translate_error_code($_err_severity);
+		$err_type=tools::translate_error_code($_err->get_severity());
 
 		echo <<<R
 <!DOCTYPE html>
@@ -25,7 +25,10 @@ h1 {margin: 1em auto; text-align: center;};
 </head>
 <body>
 	<h1>An error occured</h1>
-	<p><h2>[{$err_type}]</h2>{$_err_message}</p>
+	<p>
+		<h2>[{$err_type}]</h2>
+		{$_err->get_message()} on file {$_err->get_file()} and line {$_err->get_line()}
+	</p>
 	<ul>
 		{$backtrace}
 	</ul>
