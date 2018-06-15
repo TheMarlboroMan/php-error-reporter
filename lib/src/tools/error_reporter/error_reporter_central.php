@@ -4,6 +4,7 @@ namespace tools\error_reporter;
 abstract class error_reporter_central {
 
 	private static 				$reporter=null;
+	private static				$level=-1;
 
 	public static function 		init(error_reporter $_er=null, $_report=-1, $_display=0) {
 
@@ -26,7 +27,7 @@ abstract class error_reporter_central {
 			}
 		});
 
-		\ini_set('error_reporting', $_report);
+		\ini_set('error_reporting', self::$level);
 		\ini_set('display_errors', $_display);
 	}
 
@@ -36,11 +37,14 @@ abstract class error_reporter_central {
 			throw new \Exception("error_reporter_central::init must be called before using the error_reporting tool");
 		}
 
-		$backtraces=[];
-		foreach(debug_backtrace() as $k => $v) {
-			$backtraces[]=backtrace::from_array_and_key($v, $k);
-		}
+		if($_s & self::$level) {
 
-		self::$reporter->report(new error($_s, $_m, $_f, $_l, $backtraces));
+			$backtraces=[];
+			foreach(debug_backtrace() as $k => $v) {
+				$backtraces[]=backtrace::from_array_and_key($v, $k);
+			}
+
+			self::$reporter->report(new error($_s, $_m, $_f, $_l, $backtraces));
+		}
 	}
 };
