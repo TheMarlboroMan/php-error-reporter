@@ -1,5 +1,12 @@
 <?php
 require("lib/autoload.php");
-//TODO: THERE CAN BE NO ERRORS IN THE FILE WHERE WE DECLARE THIS!
-\tools\error_reporter\error_reporter_central::init('\tools\error_reporter\app_reporter');
-require("main.php");
+try {
+
+	//\tools\error_reporter\error_reporter_central::init();
+	\tools\error_reporter\error_reporter_central::init(new \tools\error_reporter\app_reporter);
+	require("main.php");
+}
+catch(\Exception $e) {
+
+	die($e->getMessage());
+}
