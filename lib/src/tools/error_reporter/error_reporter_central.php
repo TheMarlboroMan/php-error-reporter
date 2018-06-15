@@ -6,7 +6,7 @@ abstract class error_reporter_central {
 	private static 				$reporter=null;
 	private static				$level=-1;
 
-	public static function 		init(error_reporter $_er=null, $_report=-1, $_display=0) {
+	public static function 		init(error_reporter $_er=null, $_report=-1, $_display=1) {
 
 		if(null===$_er) {
 			self::$reporter=new default_reporter;
@@ -16,8 +16,9 @@ abstract class error_reporter_central {
 		}
 
 		\set_error_handler(function ($err_severity, $err_msg, $err_file, $err_line, array $err_context) {
-				error_reporter_central::report_error($err_severity, $err_msg, $err_file, $err_line);
-				exit();
+				if(error_reporter_central::report_error($err_severity, $err_msg, $err_file, $err_line)) {
+					exit();
+				}
 		});
 
 		\register_shutdown_function(function () {
@@ -27,6 +28,7 @@ abstract class error_reporter_central {
 			}
 		});
 
+		self::$level=$_report;
 		\ini_set('error_reporting', self::$level);
 		\ini_set('display_errors', $_display);
 	}
@@ -45,6 +47,9 @@ abstract class error_reporter_central {
 			}
 
 			self::$reporter->report(new error($_s, $_m, $_f, $_l, $backtraces));
+			return true;
 		}
+
+		return false;
 	}
 };
