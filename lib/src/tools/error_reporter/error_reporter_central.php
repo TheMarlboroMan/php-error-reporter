@@ -6,7 +6,7 @@ abstract class error_reporter_central {
 	private static 				$reporter=null;
 	private static				$level=-1;
 
-	public static function 		init(error_reporter $_er=null, $_report=-1, $_display=1) {
+	public static function 		init(error_reporter $_er=null, $_level=-1, $_display=1) {
 
 		if(null===$_er) {
 			self::$reporter=new default_reporter;
@@ -28,7 +28,7 @@ abstract class error_reporter_central {
 			}
 		});
 
-		self::$level=$_report;
+		self::$level=$_level;
 		\ini_set('error_reporting', self::$level);
 		\ini_set('display_errors', $_display);
 	}
