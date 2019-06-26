@@ -5,6 +5,17 @@ abstract class error_reporter_central {
 
 	private static 				$reporter=null;
 	private static				$level=-1;
+	private static				$enabled=true;
+
+	public static function		enable_idiotic_mode() {
+
+		self::$enabled=false;
+	}
+
+	public static function		disable_idiotic_mode() {
+
+		self::$enabled=true;
+	}
 
 	public static function 		init(error_reporter $_er=null, $_level=-1, $_display=1) {
 
@@ -16,12 +27,22 @@ abstract class error_reporter_central {
 		}
 
 		\set_error_handler(function ($err_severity, $err_msg, $err_file, $err_line, array $err_context) {
+
+				if(!self::$enabled) {
+					return;
+				}
+
 				if(error_reporter_central::report_error($err_severity, $err_msg, $err_file, $err_line)) {
 					exit();
 				}
 		});
 
 		\register_shutdown_function(function () {
+
+			if(!self::$enabled) {
+				return;
+			}
+
 			$error=error_get_last();
 			if($error) {
 				error_reporter_central::report_error($error['type'], $error['message'], $error['file'], $error['line']);
