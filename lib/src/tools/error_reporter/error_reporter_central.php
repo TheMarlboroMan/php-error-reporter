@@ -26,7 +26,7 @@ abstract class error_reporter_central {
 			self::$reporter=$_er;
 		}
 
-		\set_error_handler(function ($err_severity, $err_msg, $err_file, $err_line, array $err_context) {
+		\set_error_handler(function ($err_severity, $err_msg, $err_file, $err_line, array $err_context=[]) {
 
 				if(!self::$enabled) {
 					return;
